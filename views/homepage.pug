@@ -6,9 +6,18 @@ html
         link(rel="stylesheet", href="/css/style.css")
     body    
         h1 Homepage
-            .cards 
+            ul
+                a(href='/update-cobj') Add or Update Car
+
+            table(border="1")
+                thead
+                    tr
+                        th Name
+                        th Car Type
+                        th Color
+                tbody
                 each car in cars
-                    .card 
-                        h2.card__name #{car.properties.name} 
-                        p.card__email #{car.properties.car_type}
-                        p.card__email #{car.properties.color}
+                    tr
+                        td #{car.properties.name} 
+                        td #{car.properties.car_type}
+                        td #{car.properties.color}

@@ -1,7 +1,6 @@
 doctype html
 html 
     head 
-        title= `${title}`
         meta(name="viewport" content="width=device-width, initial-scale=1")
         link(rel="stylesheet", href="/css/style.css")
     body    
@@ -10,9 +9,9 @@ html
                 form(method="POST")
                     label(for="name") Name
                     input(type="text" name="name" required)
-                    label(for="maxSpeed") Max Speed
-                    input(type="number" name="maxSpeed" required)
                     label(for="car_type") Car Type
                     input(type="text" name="car_type" required)
+                    label(for="color") Color
+                    input(type="text" name="color" required)
                     input(type="submit" value="submit")
             a(href='/') Return to the homepage
