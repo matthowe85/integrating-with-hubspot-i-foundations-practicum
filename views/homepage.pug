@@ -6,3 +6,9 @@ html
         link(rel="stylesheet", href="/css/style.css")
     body    
         h1 Homepage
+            .cards 
+                each car in cars
+                    .card 
+                        h2.card__name #{car.properties.name} 
+                        p.card__email #{car.properties.car_type}
+                        p.card__email #{car.properties.color}
