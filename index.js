@@ -15,15 +15,15 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_ACCESS;
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
 app.get('/', async (req, res) => {
-    const contacts = 'https://api.hubspot.com/crm/v3/objects/cars';
+    const cars = 'https://api.hubspot.com/crm/v3/objects/cars';
     const headers = {
         Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
         'Content-Type': 'application/json'
     }
     try {
-        const resp = await axios.get(contacts, { headers });
+        const resp = await axios.get(cars, { headers });
         const data = resp.data.results;
-        res.render('updates', { title: 'Contacts | HubSpot APIs', data });      
+        res.render('homepage');      
     } catch (error) {
         console.error(error);
     }
@@ -51,20 +51,21 @@ app.get('/update-cobj', async (req, res) => {
 app.post('/', async (req, res) => {
     const update = {
         properties: {
-            "favorite_book": req.body.newVal
+            "name": req.body.name,
+            "maxSpeed": req.body.maxSpeed,
+            "car_type": req.body.car_type
         }
     }
 
-    const email = req.query.email;
-    const updateContact = `https://api.hubapi.com/crm/v3/objects/cars/${email}?idProperty=email`;
+    const carEndpoint = `https://api.hubapi.com/crm/v3/objects/cars/`;
     const headers = {
         Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
         'Content-Type': 'application/json'
     };
 
     try { 
-        await axios.patch(updateContact, update, { headers } );
-        res.redirect('back');
+        await axios.patch(carEndpoint, newCar, { headers } );
+        res.redirect('/');
     } catch(err) {
         console.error(err);
     }
