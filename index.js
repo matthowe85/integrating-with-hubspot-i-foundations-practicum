@@ -23,7 +23,7 @@ app.get('/', async (req, res) => {
     try {
         const resp = await axios.get(cars, { headers });
         const data = resp.data.results;
-        console.log(data);
+        //console.log(data);
         res.render('homepage', { cars: data, title: 'Homepage'  });      
     } catch (error) {
         console.error(error);
@@ -50,27 +50,47 @@ app.get('/update-cobj', async (req, res) => {
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
 
 app.post('/update-cobj', async (req, res) => {
-    const update = {
+    const carData = {
         properties: {
             "name": req.body.name,
             "color": req.body.color,
             "car_type": req.body.car_type
         }
-    }
-
-    const carEndpoint = `https://api.hubapi.com/crm/v3/objects/cars/`;
-    const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
-        'Content-Type': 'application/json'
     };
 
-    try { 
-        await axios.post(carEndpoint, update, { headers } );
-        res.redirect('/');
-    } catch(err) {
-        console.error(err);
-    }
+    const searchEndpoint = `https://api.hubapi.com/crm/v3/objects/cars/search`;
+    const headers = {
+        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+    };
 
+    try {
+        const searchBody = {
+            "filterGroups": [{
+                "filters": [{
+                    "propertyName": "name",
+                    "operator": "EQ",
+                    "value": req.body.name
+                }]
+            }]
+        };
+
+        const searchResponse = await axios.post(searchEndpoint, searchBody, { headers });
+        console.log(searchResponse);
+
+        if (searchResponse.data.total > 0) {
+            const carId = searchResponse.data.results[0].id; 
+            const updateEndpoint = `https://api.hubapi.com/crm/v3/objects/cars/${carId}`;
+            await axios.patch(updateEndpoint, carData, { headers });
+        } else {
+            const createEndpoint = `https://api.hubapi.com/crm/v3/objects/cars/`;
+            await axios.post(createEndpoint, carData, { headers });
+        }
+
+        res.redirect('/');
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("An error occurred.");
+    }
 });
 
 // * Localhost
